@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.geonames:geonames-ws-client:1.1.9">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.geonames/geonames-ws-client/1.1.9/fadfcd9894d0e7a00b90ad7cbda69ced1db99611/geonames-ws-client-1.1.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.geonames/geonames-ws-client/1.1.9/6a24db19dfc51e37b007df12fde99d511c5b8d6b/geonames-ws-client-1.1.9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
