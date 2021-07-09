@@ -1,34 +1,40 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SurveyData {
-	private ArrayList<Person> surveyedPersons;
+	private ArrayList<Respondent> surveyedRespondents;
 
 	public SurveyData() {
-		this.surveyedPersons = new ArrayList<>();
+		this.surveyedRespondents = new ArrayList<>();
 	}
 
-	public void addPerson(Person person){
-		surveyedPersons.add(person);
+	public void addPerson(Respondent respondent){
+		surveyedRespondents.add(respondent);
 	}
 
-	public void printTestPerson(int index){
-		System.out.println("Printing test person at index " + index);
-		System.out.println(surveyedPersons.get(index).getFestivalCity());
-		System.out.println(surveyedPersons.get(index).getHomeZip());
-	}
-
-	public Person getPerson(int index) {
-		return surveyedPersons.get(index);
-	}
-
-	public List<Person> generateResidencyListFromData() {
-		List<Person> residencyList = new ArrayList<>();
-		for(Person uncheckedPerson : surveyedPersons) {
-			String residencyStatus = ResidencyComparator.isAttendeeResident(uncheckedPerson);
-			Person checkedPerson = new Person(uncheckedPerson.getHomeZip(), uncheckedPerson.getFestivalCity(), residencyStatus);
-			residencyList.add(checkedPerson);
+	public List<Respondent> generateUnsortedListFromData(DistanceCalculator calculator) {
+		List<Respondent> unsortedList = new ArrayList<>();
+		int count = 0;
+		for(Respondent uncheckedRespondent : surveyedRespondents) {
+			count++;
+			System.out.println(count + ": Checking distance for " + uncheckedRespondent.getFestivalCity());
+			double distance = calculator.calculateDistanceForRespondent(uncheckedRespondent);
+			Respondent respondentWithDistance = new Respondent(uncheckedRespondent.getHomeZip(), uncheckedRespondent.getFestivalCity(), distance);
+			unsortedList.add(respondentWithDistance);
 		}
-		return residencyList;
+
+		return unsortedList;
+	}
+
+	public double findRadiusLimitForSampleSize(List<Respondent> unsortedList, int desiredSampleSize) {
+		if(desiredSampleSize > unsortedList.size()) {
+			throw new IllegalArgumentException("Desired sample size [" + desiredSampleSize
+					+ "] canont be larger than list size [" + unsortedList.size() + "]");
+		}
+		List<Respondent> sortedList = new ArrayList<>(unsortedList);
+		Collections.sort(sortedList);
+		double limit = sortedList.get(desiredSampleSize).getDistance();
+		return limit;
 	}
 }

@@ -6,10 +6,22 @@ import org.geonames.WebService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeonamesClient {
+public class GeonamesClient implements MapClient {
 
-	public static List<PostalCode> getCodesFor(String targetPlace) {
-		WebService.setUserName("residencychecker");
+	private String username;
+
+	public GeonamesClient(String username) {
+		this.username = username;
+	}
+
+	@Override
+	public Coordinates getCoordinates(String address) {
+		List<PostalCode> results = getCodesFor(address);
+		return new Coordinates(results.get(0).getLatitude(), results.get(0).getLongitude());
+	}
+
+	private  List<PostalCode> getCodesFor(String targetPlace) {
+		WebService.setUserName(username);
 		List<PostalCode> results = new ArrayList<>();
 		try {
 			PostalCodeSearchCriteria criteria = new PostalCodeSearchCriteria();

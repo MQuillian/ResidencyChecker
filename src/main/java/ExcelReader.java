@@ -1,9 +1,7 @@
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ExcelReader {
@@ -13,12 +11,10 @@ public class ExcelReader {
 		this.surveyData = new SurveyData();
 	}
 
-	public static final String SURVEY_RESPONSES_FILE_PATH = "ResidentsTouristsTest.xlsx";
-
-	public static SurveyData readData() {
+	public static SurveyData readData(String inputFilePath) {
 
 		try {
-			Workbook workbook = WorkbookFactory.create(new File(SURVEY_RESPONSES_FILE_PATH));
+			Workbook workbook = WorkbookFactory.create(new File(inputFilePath));
 
 			Iterator<Sheet> sheetIterator = workbook.sheetIterator();
 			while(sheetIterator.hasNext()) {
@@ -39,10 +35,11 @@ public class ExcelReader {
 				festivalAddress = cellValue;
 
 				cell = row.getCell(1);
-				cellValue = dataFormatter.formatCellValue(cell);
-				homeZip = cellValue;
+				int code = (int)cell.getNumericCellValue();
+				String formattedCode = String.format("%05d", code);
+				homeZip = formattedCode;
 
-				surveyData.addPerson(new Person(homeZip, festivalAddress));
+				surveyData.addPerson(new Respondent(homeZip, festivalAddress));
 			}
 			workbook.close();
 			return surveyData;

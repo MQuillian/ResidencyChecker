@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ExcelWriter {
 	private static String[] columns = {"Residency Zip Code", "Festival City", "Residency Status"};
-	private static List<Person> checkedPersons = null;
+	private static List<Respondent> checkedRespondents = null;
 
-	public static void writeData(List<Person> checkedPersons) {
+	public static void writeData(List<Respondent> checkedRespondents, double limit) {
 		try {
 			Workbook workbook = new XSSFWorkbook();
 			CreationHelper createHelper = workbook.getCreationHelper();
@@ -30,27 +30,36 @@ public class ExcelWriter {
 				cell.setCellStyle(headerCellStyle);
 			}
 
-			int numResidents = 0;
+			int totalResidents = 0;
 			int rowNum = 1;
-			for(Person person : checkedPersons) {
+			for(Respondent respondent : checkedRespondents) {
 				Row row = sheet.createRow(rowNum++);
 
 				row.createCell(0)
-						.setCellValue(person.getHomeZip());
+						.setCellValue(respondent.getHomeZip());
 
 				row.createCell(1)
-						.setCellValue(person.getFestivalCity());
+						.setCellValue(respondent.getFestivalCity());
 
 				row.createCell(2)
-						.setCellValue(person.getResidencyStatus());
-				if(person.getResidencyStatus().equals("1")) {
-					numResidents++;
-				};
+						.setCellValue(respondent.getDistance());
+				if(row.getCell(2).getNumericCellValue() < limit) {
+					row.createCell(3)
+							.setCellValue("Resident");
+					totalResidents++;
+				} else if(row.getCell(2).getNumericCellValue() == 9999999) {
+					row.createCell(3)
+							.setCellValue("Could not find zip code - check by hand");
+				} else {
+					row.createCell(3)
+							.setCellValue("-");
+				}
 			}
 
-			Row row = sheet.createRow(582);
+
+			Row row = sheet.createRow(581);
 			row.createCell(2)
-					.setCellValue("Total residents: " + numResidents);
+					.setCellValue("Total residents: " + totalResidents);
 
 			for(int i = 0; i < columns.length; i++) {
 				sheet.autoSizeColumn(i);
